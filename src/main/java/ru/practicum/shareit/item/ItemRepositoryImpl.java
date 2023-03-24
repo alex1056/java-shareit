@@ -32,7 +32,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     private Item findById(Long userId, Long id) {
-        Optional<Item> itemResult = items.values().stream().filter(item -> item.getId() == id && item.getOwner() == userId).findAny();
+        Optional<Item> itemResult = items.values().stream().filter(item -> item.getId().equals(id) && item.getOwner().equals(userId)).findAny();
         if (itemResult.isEmpty()) {
             throw new NotFoundException("item c id= " + id + " и userId= " + userId);
         }
@@ -47,7 +47,7 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public ItemDto findByIdDtoAnyUser(Long id) {
-        Optional<Item> itemResult = items.values().stream().filter(item -> item.getId() == id).findAny();
+        Optional<Item> itemResult = items.values().stream().filter(item -> item.getId().equals(id)).findAny();
         if (itemResult.isEmpty()) {
             throw new NotFoundException("item c id= " + id);
         }
