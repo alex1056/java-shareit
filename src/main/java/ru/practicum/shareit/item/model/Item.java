@@ -2,11 +2,7 @@ package ru.practicum.shareit.item.model;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.Setter;
 import ru.practicum.shareit.request.ItemRequest;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
