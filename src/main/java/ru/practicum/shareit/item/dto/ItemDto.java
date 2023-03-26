@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import ru.practicum.shareit.request.ItemRequest;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -17,7 +18,7 @@ public class ItemDto {
     private final String description;
     @NotNull(message = "Укажите доступность для аренды вещи")
     private final Boolean available;
-    private final Long request;
+    private final ItemRequest request;
 
     public Boolean isAvailable() {
         return available;

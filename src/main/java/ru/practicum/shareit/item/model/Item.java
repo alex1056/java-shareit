@@ -7,12 +7,12 @@ import ru.practicum.shareit.request.ItemRequest;
 @Data
 @Builder
 public class Item {
-    private final Long id;
-    private final String name;
-    private final String description;
-    private final Boolean available;
-    private final Long owner;
-    private final ItemRequest request;
+    private Long id;
+    private String name;
+    private String description;
+    private Boolean available;
+    private Long owner;
+    private ItemRequest request;
 
     public Boolean isAvailable() {
         return available;

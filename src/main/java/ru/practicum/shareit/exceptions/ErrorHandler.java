@@ -31,9 +31,9 @@ public class ErrorHandler {
     }
 
 
-    @ExceptionHandler(SmthAlreadyExistException.class)
+    @ExceptionHandler(EntityAlreadyExistException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleSmthAlreadyExistException(SmthAlreadyExistException e) {
+    public ErrorResponse handleSmthAlreadyExistException(EntityAlreadyExistException e) {
         return new ErrorResponse("Уже существует: " + e.getMessage());
     }
 
