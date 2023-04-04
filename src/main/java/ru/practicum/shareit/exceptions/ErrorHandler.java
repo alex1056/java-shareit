@@ -1,42 +1,28 @@
 package ru.practicum.shareit.exceptions;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Slf4j
 public class ErrorHandler {
 
-    @ExceptionHandler
+    @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public MultipleErrorsResponse collectValidationErrorsAndLog(final MethodArgumentNotValidException e) {
-
-        List list = e.getBindingResult().getAllErrors().stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .collect(Collectors.toList());
-
-        for (Object error : list) {
-            log.warn("Ошибка валидации: {}", error);
-        }
-
-        return new MultipleErrorsResponse(list);
+    public ErrorResponse badRequsetException(BadRequestException e) {
+        return new ErrorResponse(e.getMessage());
     }
-
 
     @ExceptionHandler(EntityAlreadyExistException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleSmthAlreadyExistException(EntityAlreadyExistException e) {
         return new ErrorResponse("Уже существует: " + e.getMessage());
     }
-
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)

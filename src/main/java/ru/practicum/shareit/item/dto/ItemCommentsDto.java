@@ -7,11 +7,12 @@ import ru.practicum.shareit.booking.dto.BookingToFrontDto;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ItemDto {
+public class ItemCommentsDto {
     private Long id;
     @NotNull(message = "У вещи должно быть название")
     @NotEmpty(message = "Название должно быть заполнено")
@@ -23,6 +24,7 @@ public class ItemDto {
     private Long requestId;
     private BookingToFrontDto lastBooking;
     private BookingToFrontDto nextBooking;
+    private Set<CommentDto> comments;
 
     public Boolean isAvailable() {
         return available;
