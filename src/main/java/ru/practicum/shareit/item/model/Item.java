@@ -29,9 +29,18 @@ public class Item {
     private BookingToFrontDto lastBooking;
     @Transient
     private BookingToFrontDto nextBooking;
+
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id")
     private Set<Comment> comments;
+
+
+    //    @OneToMany(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "item_id")
+//    private Set<Comment> comments;
+//    @ElementCollection
+//    @CollectionTable(name = "comments", joinColumns = @JoinColumn(name = "item_id"))
+//    private Set<Comment> comments;
 
     public Boolean isAvailable() {
         return available;

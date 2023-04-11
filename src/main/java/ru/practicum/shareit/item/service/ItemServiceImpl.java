@@ -131,12 +131,15 @@ class ItemServiceImpl implements ItemService {
                 commentNewDto.getText(),
                 itemId,
                 UserMapper.toUser(userDto),
-                LocalDateTime.now());
+                LocalDateTime.now(),
+                null
+        );
         Comment savedComment = commentRepository.save(comment);
         return CommentMapper.toCommentDto(savedComment);
     }
 
     private Boolean isRealBooking(Booking booking) {
+        if (booking == null || booking.getStatus() == null || booking.getState() == null) return false;
         if (!booking.getState().equals(BookingState.REJECTED)
                 &&
                 !booking.getStatus().equals(BookingStatus.REJECTED)
