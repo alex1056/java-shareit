@@ -34,14 +34,6 @@ public class Item {
     @JoinColumn(name = "item_id")
     private Set<Comment> comments;
 
-
-    //    @OneToMany(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "item_id")
-//    private Set<Comment> comments;
-//    @ElementCollection
-//    @CollectionTable(name = "comments", joinColumns = @JoinColumn(name = "item_id"))
-//    private Set<Comment> comments;
-
     public Boolean isAvailable() {
         return available;
     }
