@@ -25,7 +25,7 @@ public class Comment {
     private User author;
     private LocalDateTime created;
 
-    @ManyToOne
-    @JoinColumn(name = "id", insertable = false, updatable = false, nullable = false)
-    private Item item;
+//    @ManyToOne
+//    @JoinColumn(name = "id", insertable = false, updatable = false, nullable = false)
+//    private Item item;
 }

@@ -131,8 +131,9 @@ class ItemServiceImpl implements ItemService {
                 commentNewDto.getText(),
                 itemId,
                 UserMapper.toUser(userDto),
-                LocalDateTime.now(),
-                null
+                LocalDateTime.now()
+//                ,
+//                null
         );
         Comment savedComment = commentRepository.save(comment);
         return CommentMapper.toCommentDto(savedComment);
