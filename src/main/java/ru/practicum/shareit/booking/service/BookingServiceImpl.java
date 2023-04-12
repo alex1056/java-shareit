@@ -31,15 +31,33 @@ import java.util.stream.Collectors;
 class BookingServiceImpl implements BookingService {
     private final BookingRepository repository;
     private final UserService userService;
-
     private final ItemRepository itemRepository;
 
 
     @Override
     public List<BookingToFrontDto> getAllBookings(Long userId, BookingSearchStatus searchStatus) {
         userService.findUserById(userId);
-        List<Booking> bookings = repository.findBookingByBookerIdOrderByStartDesc(userId);
-        return filterBookingsByStatus(bookings, searchStatus);
+        List<Booking> filteredBookings = new ArrayList<>();
+        switch (searchStatus) {
+            case ALL:
+                return BookingMapper.toBookingToFrontDto(repository.findBookingByBookerIdOrderByStartDesc(userId));
+            case PAST:
+                filteredBookings = repository.findByBooker_IdAndEndIsBefore(userId, LocalDateTime.now());
+                break;
+            case CURRENT:
+                filteredBookings = repository.findByBooker_IdAndEndIsAfterAndStarIsBefore(userId, LocalDateTime.now());
+                break;
+            case FUTURE:
+                filteredBookings = repository.findByBooker_IdAndStarIsAfter(userId, LocalDateTime.now());
+                break;
+            case WAITING:
+                filteredBookings = repository.findByBooker_IdAndStatus(userId, BookingStatus.WAITING.toString());
+                break;
+            case REJECTED:
+                filteredBookings = repository.findByBooker_IdAndStatus(userId, BookingStatus.REJECTED.toString());
+                break;
+        }
+        return BookingMapper.toBookingToFrontDto(filteredBookings);
     }
 
     @Override
@@ -144,5 +162,4 @@ class BookingServiceImpl implements BookingService {
         }
         return BookingMapper.toBookingToFrontDto(filteredBookings);
     }
-
 }

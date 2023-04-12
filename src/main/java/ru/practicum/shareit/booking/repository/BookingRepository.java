@@ -106,4 +106,43 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             nativeQuery = true
     )
     Optional<Booking> findNearestBookingByCurrentDate(Long itemId, LocalDateTime dateNow);
+
+
+    @Query(value = "select * from bookings b " +
+            "where b.booker_id = ?1 " +
+            "AND " +
+            "b.end_date <= ?2 " +
+            "order by b.start_date desc ",
+            nativeQuery = true
+    )
+    List<Booking> findByBooker_IdAndEndIsBefore(Long bookerId, LocalDateTime dateNow);
+
+    @Query(value = "select * from bookings b " +
+            "where b.booker_id = ?1 " +
+            "AND " +
+            "b.end_date > ?2 " +
+            "AND " +
+            "b.start_date < ?2 " +
+            "order by b.start_date desc ",
+            nativeQuery = true
+    )
+    List<Booking> findByBooker_IdAndEndIsAfterAndStarIsBefore(Long bookerId, LocalDateTime dateNow);
+
+    @Query(value = "select * from bookings b " +
+            "where b.booker_id = ?1 " +
+            "AND " +
+            "b.start_date > ?2 " +
+            "order by b.start_date desc ",
+            nativeQuery = true
+    )
+    List<Booking> findByBooker_IdAndStarIsAfter(Long bookerId, LocalDateTime dateNow);
+
+    @Query(value = "select * from bookings b " +
+            "where b.booker_id = ?1 " +
+            "AND " +
+            "b.status = ?2 " +
+            "order by b.start_date desc ",
+            nativeQuery = true
+    )
+    List<Booking> findByBooker_IdAndStatus(Long bookerId, String status);
 }
