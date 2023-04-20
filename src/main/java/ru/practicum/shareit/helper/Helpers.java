@@ -30,4 +30,9 @@ public class Helpers {
         if (start.isEqual(end) || start.isAfter(end) || start.isBefore(LocalDateTime.now()) || end.isBefore(LocalDateTime.now()))
             throw new BadRequestException("Ошибка валидации: некорректные даты start и/или end");
     }
+
+    public static Integer getPageNumber(Integer startIndex, Integer size) {
+        Integer result = startIndex / size;
+        return result;
+    }
 }

@@ -12,7 +12,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ItemCommentsDto {
+public class ItemCommentDto {
     private Long id;
     @NotNull(message = "У вещи должно быть название")
     @NotEmpty(message = "Название должно быть заполнено")

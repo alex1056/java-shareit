@@ -17,12 +17,13 @@ import java.util.Optional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+public
 class UserServiceImpl implements UserService {
     private final UserRepository repository;
 
     @Override
     public List<UserDto> getAllUsers() {
-        List<User> users = repository.findAll();
+        List<User> users = repository.findAllByOrderByIdAsc();
         return UserMapper.toUserDto(users);
     }
 

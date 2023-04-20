@@ -4,24 +4,30 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.CommentNewDto;
-import ru.practicum.shareit.item.dto.ItemCommentsDto;
+import ru.practicum.shareit.item.dto.CommentFromFrontDto;
+import ru.practicum.shareit.item.dto.ItemCommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
+import javax.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
+@Validated
 public class ItemController {
     private final ItemService itemService;
     private static final String HEADER = "X-Sharer-User-Id";
 
     @GetMapping
-    public List<ItemCommentsDto> getAll(@RequestHeader(HEADER) Long userId) {
-        return itemService.getAll(userId);
+    public List<ItemCommentDto> getAll(
+            @RequestParam(defaultValue = "0") @Min(0) Integer from,
+            @RequestParam(defaultValue = "100") @Min(1) Integer size,
+            @RequestHeader(HEADER) Long userId
+    ) {
+        return itemService.getAll(userId, from, size);
     }
 
     @PostMapping
@@ -32,21 +38,25 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public CommentDto addComment(@PathVariable Long itemId,
-                                 @Validated @RequestBody CommentNewDto commentNewDto,
+                                 @Validated @RequestBody CommentFromFrontDto commentFromFrontDto,
                                  @RequestHeader(HEADER) Long userId) {
-        return itemService.addComment(userId, itemId, commentNewDto);
+        return itemService.addComment(userId, itemId, commentFromFrontDto);
     }
 
     @GetMapping("/{itemId}")
-    public ItemCommentsDto findById(@PathVariable Long itemId,
-                                    @RequestHeader(HEADER) Long userId) {
+    public ItemCommentDto findById(@PathVariable Long itemId,
+                                   @RequestHeader(HEADER) Long userId) {
         return itemService.findByIdAnyUser(userId, itemId);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItems(@RequestParam String text) {
+    public List<ItemDto> searchItems(
+            @RequestParam(defaultValue = "0") @Min(0) Integer from,
+            @RequestParam(defaultValue = "100") @Min(1) Integer size,
+            @RequestParam String text
+    ) {
         if (text.isEmpty()) return new ArrayList<>();
-        return itemService.search(text);
+        return itemService.search(text, from, size);
     }
 
     @PatchMapping("/{itemId}")

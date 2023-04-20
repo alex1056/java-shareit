@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingFromFrontDto;
@@ -13,6 +14,7 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exceptions.BadRequestException;
 import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.helper.Helpers;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -28,33 +30,34 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor
-class BookingServiceImpl implements BookingService {
+public class BookingServiceImpl implements BookingService {
     private final BookingRepository repository;
     private final UserService userService;
     private final ItemRepository itemRepository;
 
 
     @Override
-    public List<BookingToFrontDto> getAllBookings(Long userId, BookingSearchStatus searchStatus) {
+    public List<BookingToFrontDto> getAllBookings(Long userId, BookingSearchStatus searchStatus, Integer from, Integer size) {
         userService.findUserById(userId);
+        PageRequest pageRequest = PageRequest.of(Helpers.getPageNumber(from, size), size);
         List<Booking> filteredBookings = new ArrayList<>();
         switch (searchStatus) {
             case ALL:
-                return BookingMapper.toBookingToFrontDto(repository.findBookingByBookerIdOrderByStartDesc(userId));
+                return BookingMapper.toBookingToFrontDto(repository.findBookingByBookerIdOrderByStartDesc(userId, pageRequest));
             case PAST:
-                filteredBookings = repository.findByBooker_IdAndEndIsBefore(userId, LocalDateTime.now());
+                filteredBookings = repository.findByBooker_IdAndEndIsBefore(userId, LocalDateTime.now(), pageRequest);
                 break;
             case CURRENT:
-                filteredBookings = repository.findByBooker_IdAndEndIsAfterAndStarIsBefore(userId, LocalDateTime.now());
+                filteredBookings = repository.findByBooker_IdAndEndIsAfterAndStarIsBefore(userId, LocalDateTime.now(), pageRequest);
                 break;
             case FUTURE:
-                filteredBookings = repository.findByBooker_IdAndStarIsAfter(userId, LocalDateTime.now());
+                filteredBookings = repository.findByBooker_IdAndStarIsAfter(userId, LocalDateTime.now(), pageRequest);
                 break;
             case WAITING:
-                filteredBookings = repository.findByBooker_IdAndStatus(userId, BookingStatus.WAITING.toString());
+                filteredBookings = repository.findByBooker_IdAndStatus(userId, BookingStatus.WAITING.toString(), pageRequest);
                 break;
             case REJECTED:
-                filteredBookings = repository.findByBooker_IdAndStatus(userId, BookingStatus.REJECTED.toString());
+                filteredBookings = repository.findByBooker_IdAndStatus(userId, BookingStatus.REJECTED.toString(), pageRequest);
                 break;
         }
         return BookingMapper.toBookingToFrontDto(filteredBookings);
@@ -68,10 +71,9 @@ class BookingServiceImpl implements BookingService {
         if (!itemOptional.get().getAvailable()) {
             throw new BadRequestException("предмет с id=" + bookingFromFrontDto.getItemId() + " не доступен для заказа");
         }
-        if (bookingFromFrontDto.getItemId().equals(userId)) {
-            throw new NotFoundException("влалец не может заказать сам у семя предмет");
+        if (itemOptional.get().getOwnerId().equals(userId)) {
+            throw new NotFoundException("владелц не может заказать сам у семя предмет");
         }
-        // проверки закончились
         Booking booking = new Booking(null,
                 bookingFromFrontDto.getStart(),
                 bookingFromFrontDto.getEnd(),
@@ -95,9 +97,10 @@ class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingToFrontDto> findBookingsByOwner(Long userId, BookingSearchStatus status) {
+    public List<BookingToFrontDto> findBookingsByOwner(Long userId, BookingSearchStatus status, Integer from, Integer size) {
         userService.findUserById(userId);
-        List<Booking> bookings = repository.findBookingsByOwner(userId);
+        PageRequest pageRequest = PageRequest.of(Helpers.getPageNumber(from, size), size);
+        List<Booking> bookings = repository.findBookingsByOwner(userId, pageRequest);
         return filterBookingsByStatus(bookings, status);
     }
 

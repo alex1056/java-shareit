@@ -24,4 +24,8 @@ public class Comment {
     @JoinColumn(name = "author_id")
     private User author;
     private LocalDateTime created;
+
+    public String getText() {
+        return text != null ? text.trim() : text;
+    }
 }

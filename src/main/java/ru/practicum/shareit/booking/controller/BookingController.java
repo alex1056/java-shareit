@@ -9,20 +9,24 @@ import ru.practicum.shareit.booking.model.BookingSearchStatus;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.helper.Helpers;
 
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
+@Validated
 public class BookingController {
     private final BookingService bookingService;
     private static final String HEADER = "X-Sharer-User-Id";
 
     @GetMapping
     public List<BookingToFrontDto> getAll(@RequestHeader(HEADER) Long userId,
+                                          @RequestParam(defaultValue = "0") @Min(0) Integer from,
+                                          @RequestParam(defaultValue = "100") @Min(1) Integer size,
                                           @RequestParam(defaultValue = "ALL") String state) {
         BookingSearchStatus serchStatus = BookingSearchStatus.getStatus(state);
-        return bookingService.getAllBookings(userId, serchStatus);
+        return bookingService.getAllBookings(userId, serchStatus, from, size);
     }
 
     @PostMapping
@@ -47,9 +51,11 @@ public class BookingController {
 
     @GetMapping("/owner")
     public List<BookingToFrontDto> searchItems(@RequestHeader(HEADER) Long userId,
+                                               @RequestParam(defaultValue = "0") @Min(0) Integer from,
+                                               @RequestParam(defaultValue = "100") @Min(1) Integer size,
                                                @RequestParam(defaultValue = "ALL") String state) {
         BookingSearchStatus serchStatus = BookingSearchStatus.getStatus(state);
-        return bookingService.findBookingsByOwner(userId, serchStatus);
+        return bookingService.findBookingsByOwner(userId, serchStatus, from, size);
     }
 
     @DeleteMapping("/{bookingId}")
