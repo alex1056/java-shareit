@@ -27,5 +27,4 @@ public class User {
         if (email != null) return email.trim();
         return email;
     }
-
 }

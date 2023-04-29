@@ -45,7 +45,6 @@ class UserControllerTests {
                 null,
                 "user1@mail.ru",
                 "Иван");
-        
         when(userService.saveUser(any()))
                 .thenReturn(userDto);
 
