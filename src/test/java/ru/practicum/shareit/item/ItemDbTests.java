@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.practicum.shareit.helper.Helpers;
@@ -83,8 +84,8 @@ public class ItemDbTests {
     void testFindItemByOwnerId() {
         userService.saveUser(userDto1);
         itemService.createItem(1L, itemDto0);
-        PageRequest pageRequest = PageRequest.of(Helpers.getPageNumber(0, 2), 2);
-        List<Item> item = itemRepository.findItemByOwnerId(1L, pageRequest);
+        Pageable page = PageRequest.of(Helpers.getPageNumber(0, 2), 2);
+        List<Item> item = itemRepository.findItemByOwnerId(1L, page);
         assertThat(item.size(), equalTo(1));
         assertThat(item.get(0).getId(), equalTo(1L));
         assertThat(item.get(0).getName(), equalTo(itemDto0.getName()));
@@ -116,10 +117,10 @@ public class ItemDbTests {
         userService.saveUser(userDto1);
         itemService.createItem(1L, itemDto0);
         itemService.createItem(1L, itemDto1);
-        PageRequest pageRequest = PageRequest.of(Helpers.getPageNumber(0, 2), 2);
-        List<Item> itemList = itemRepository.search("сменными", pageRequest);
+        Pageable page = PageRequest.of(Helpers.getPageNumber(0, 2), 2);
+        List<Item> itemList = itemRepository.search("сменными", page);
         assertThat(itemList.size(), equalTo(2));
-        itemList = itemRepository.search("abc", pageRequest);
+        itemList = itemRepository.search("abc", page);
         assertThat(itemList.size(), equalTo(0));
     }
 }

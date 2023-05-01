@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingFromFrontDto;
@@ -39,25 +40,25 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingToFrontDto> getAllBookings(Long userId, BookingSearchStatus searchStatus, Integer from, Integer size) {
         userService.findUserById(userId);
-        PageRequest pageRequest = PageRequest.of(Helpers.getPageNumber(from, size), size);
+        Pageable page = PageRequest.of(Helpers.getPageNumber(from, size), size);
         List<Booking> filteredBookings = new ArrayList<>();
         switch (searchStatus) {
             case ALL:
-                return BookingMapper.toBookingToFrontDto(repository.findBookingByBookerIdOrderByStartDesc(userId, pageRequest));
+                return BookingMapper.toBookingToFrontDto(repository.findAllByBookerIdOrderByStartDesc(userId, page));
             case PAST:
-                filteredBookings = repository.findByBooker_IdAndEndIsBefore(userId, LocalDateTime.now(), pageRequest);
+                filteredBookings = repository.findByBooker_IdAndEndIsBefore(userId, LocalDateTime.now(), page);
                 break;
             case CURRENT:
-                filteredBookings = repository.findByBooker_IdAndEndIsAfterAndStarIsBefore(userId, LocalDateTime.now(), pageRequest);
+                filteredBookings = repository.findByBooker_IdAndEndIsAfterAndStarIsBefore(userId, LocalDateTime.now(), page);
                 break;
             case FUTURE:
-                filteredBookings = repository.findByBooker_IdAndStarIsAfter(userId, LocalDateTime.now(), pageRequest);
+                filteredBookings = repository.findByBooker_IdAndStarIsAfter(userId, LocalDateTime.now(), page);
                 break;
             case WAITING:
-                filteredBookings = repository.findByBooker_IdAndStatus(userId, BookingStatus.WAITING.toString(), pageRequest);
+                filteredBookings = repository.findByBooker_IdAndStatus(userId, BookingStatus.WAITING.toString(), page);
                 break;
             case REJECTED:
-                filteredBookings = repository.findByBooker_IdAndStatus(userId, BookingStatus.REJECTED.toString(), pageRequest);
+                filteredBookings = repository.findByBooker_IdAndStatus(userId, BookingStatus.REJECTED.toString(), page);
                 break;
         }
         return BookingMapper.toBookingToFrontDto(filteredBookings);
@@ -99,8 +100,8 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingToFrontDto> findBookingsByOwner(Long userId, BookingSearchStatus status, Integer from, Integer size) {
         userService.findUserById(userId);
-        PageRequest pageRequest = PageRequest.of(Helpers.getPageNumber(from, size), size);
-        List<Booking> bookings = repository.findBookingsByOwner(userId, pageRequest);
+        Pageable page = PageRequest.of(Helpers.getPageNumber(from, size), size);
+        List<Booking> bookings = repository.findBookingsByOwner(userId, page);
         return filterBookingsByStatus(bookings, status);
     }
 

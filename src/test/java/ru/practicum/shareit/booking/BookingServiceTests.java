@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.dto.BookingFromFrontDto;
 import ru.practicum.shareit.booking.dto.BookingToFrontDto;
 import ru.practicum.shareit.booking.model.Booking;
@@ -234,8 +235,8 @@ public class BookingServiceTests {
         when(mockUserService.findUserById(1L))
                 .thenReturn(userDto1);
 
-        PageRequest pageRequest = PageRequest.of(Helpers.getPageNumber(0, 100), 100);
-        when(mockBookingRepository.findBookingsByOwner(1L, pageRequest))
+        Pageable page = PageRequest.of(Helpers.getPageNumber(0, 100), 100);
+        when(mockBookingRepository.findBookingsByOwner(1L, page))
                 .thenReturn(List.of(booking, booking));
 
         List<BookingToFrontDto> bookingToFrontDtoList = bookingService.findBookingsByOwner(
@@ -290,8 +291,8 @@ public class BookingServiceTests {
                 null
         );
 
-        pageRequest = PageRequest.of(Helpers.getPageNumber(0, 100), 100);
-        when(mockBookingRepository.findBookingsByOwner(1L, pageRequest))
+        page = PageRequest.of(Helpers.getPageNumber(0, 100), 100);
+        when(mockBookingRepository.findBookingsByOwner(1L, page))
                 .thenReturn(List.of(booking1Current, booking1Current, booking2Past, booking2Future));
 
 
@@ -299,21 +300,21 @@ public class BookingServiceTests {
                 1L, BookingSearchStatus.CURRENT, 0, 100);
         Assertions.assertEquals(2, bookingToFrontDtoList.size());
 
-        when(mockBookingRepository.findBookingsByOwner(1L, pageRequest))
+        when(mockBookingRepository.findBookingsByOwner(1L, page))
                 .thenReturn(List.of(booking1Current, booking2Past, booking2Past));
 
         bookingToFrontDtoList = bookingService.findBookingsByOwner(
                 1L, BookingSearchStatus.PAST, 0, 100);
         Assertions.assertEquals(2, bookingToFrontDtoList.size());
 
-        when(mockBookingRepository.findBookingsByOwner(1L, pageRequest))
+        when(mockBookingRepository.findBookingsByOwner(1L, page))
                 .thenReturn(List.of(booking2Future, booking2Future, booking1Current, booking2Past, booking2Past));
 
         bookingToFrontDtoList = bookingService.findBookingsByOwner(
                 1L, BookingSearchStatus.FUTURE, 0, 100);
         Assertions.assertEquals(2, bookingToFrontDtoList.size());
 
-        when(mockBookingRepository.findBookingsByOwner(1L, pageRequest))
+        when(mockBookingRepository.findBookingsByOwner(1L, page))
                 .thenReturn(List.of(booking2Future, booking2Future, booking2Rejected,
                         booking1Current, booking2Past, booking2Past));
 
@@ -321,7 +322,7 @@ public class BookingServiceTests {
                 1L, BookingSearchStatus.WAITING, 0, 100);
         Assertions.assertEquals(5, bookingToFrontDtoList.size());
 
-        when(mockBookingRepository.findBookingsByOwner(1L, pageRequest))
+        when(mockBookingRepository.findBookingsByOwner(1L, page))
                 .thenReturn(List.of(booking2Future, booking2Future, booking2Rejected, booking1Current, booking2Past, booking2Past, booking2Rejected));
 
         bookingToFrontDtoList = bookingService.findBookingsByOwner(

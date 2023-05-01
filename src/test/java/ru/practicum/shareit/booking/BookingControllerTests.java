@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -128,6 +129,33 @@ class BookingControllerTests {
                         .header("X-Sharer-User-Id", "1")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testAddVerifyCallingTimes() throws Exception {
+        BookingFromFrontDto bookingFromFrontDto = new BookingFromFrontDto(
+                1L,
+                LocalDateTime.now().plusSeconds(10),
+                LocalDateTime.now().plusSeconds(100),
+                1L,
+                1L,
+                BookingStatus.WAITING
+        );
+
+        when(bookingService.saveBooking(1L, bookingFromFrontDto))
+                .thenReturn(bookingToFrontDto1);
+
+        mvc.perform(post("/bookings")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(mapper.writeValueAsString(bookingFromFrontDto))
+                        .header("X-Sharer-User-Id", "1")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+
+        Mockito.verify(bookingService, Mockito.times(1))
+                .saveBooking(1L, bookingFromFrontDto);
     }
 
     @Test

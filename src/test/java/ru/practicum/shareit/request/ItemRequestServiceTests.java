@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dto.ItemRequestFromFrontDto;
@@ -82,10 +83,10 @@ public class ItemRequestServiceTests {
         ItemRequestService itemRequestService = new ItemRequestServiceImpl(
                 mockItemRequestRepository, mockUserService);
 
-        PageRequest pageRequest = PageRequest.of(0, 1);
+        Pageable page = PageRequest.of(0, 1);
 
         Mockito
-                .when(mockItemRequestRepository.findItemRequestPages(1L, pageRequest))
+                .when(mockItemRequestRepository.findItemRequestPages(1L, page))
                 .thenReturn(itemRequestList);
 
         List<ItemRequestToFrontDto> itemRequestListDto = itemRequestService.findItemRequestsFromIndex(1L, 0, 1);

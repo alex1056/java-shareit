@@ -131,7 +131,7 @@ public class ItemRequestDbTests {
         assertThat(itemRequestToFrontDtoList.size(), equalTo(2));
         List<ItemRequestToFrontDto> itemRequestToFrontDtoList1 = service.findItemRequestsFromIndex(2L, 1, 2);
         assertThat(itemRequestToFrontDtoList1.size(), equalTo(2));
-        assertThat(itemRequestToFrontDtoList1.get(0).getId(), equalTo(3L)); // самый послений вначале
+        assertThat(itemRequestToFrontDtoList1.get(0).getId(), equalTo(3L)); // самый последний вначале
         assertThat(itemRequestToFrontDtoList1.get(0).getDescription(), equalTo(itemRequestFromFrontDto3.getDescription()));
 
     }

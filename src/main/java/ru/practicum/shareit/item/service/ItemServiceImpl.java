@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingMapper;
@@ -38,8 +39,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemCommentDto> getAll(Long userId, Integer from, Integer size) {
         userService.findUserById(userId);
-        PageRequest pageRequest = PageRequest.of(Helpers.getPageNumber(from, size), size);
-        List<Item> itemList = repository.findItemByOwnerId(userId, pageRequest);
+        Pageable page = PageRequest.of(Helpers.getPageNumber(from, size), size);
+        List<Item> itemList = repository.findItemByOwnerId(userId, page);
         for (Item item : itemList) {
             Optional<Booking> bookingOptLast = bookingRepository.findNearestBookingByEndDate(item.getId(), LocalDateTime.now());
 
@@ -104,8 +105,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> search(String text, Integer from, Integer size) {
-        PageRequest pageRequest = PageRequest.of(Helpers.getPageNumber(from, size), size);
-        List<Item> itemList = repository.search(text, pageRequest);
+        Pageable page = PageRequest.of(Helpers.getPageNumber(from, size), size);
+        List<Item> itemList = repository.search(text, page);
         return ItemMapper.toItemDto(itemList);
     }
 

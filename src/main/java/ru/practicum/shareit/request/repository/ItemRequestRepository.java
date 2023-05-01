@@ -1,6 +1,6 @@
 package ru.practicum.shareit.request.repository;
 
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.request.model.ItemRequest;
@@ -16,5 +16,5 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
             "order by ir.created DESC ",
             nativeQuery = true
     )
-    List<ItemRequest> findItemRequestPages(Long ownerId, PageRequest pageRequest);
+    List<ItemRequest> findItemRequestPages(Long ownerId, Pageable pageable);
 }

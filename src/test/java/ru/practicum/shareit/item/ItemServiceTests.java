@@ -10,6 +10,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.model.BookingStatus;
@@ -219,9 +220,9 @@ public class ItemServiceTests {
     @Test
     void testSearch() {
 
-        PageRequest pageRequest = PageRequest.of(Helpers.getPageNumber(0, 2), 2);
+        Pageable page = PageRequest.of(Helpers.getPageNumber(0, 2), 2);
 
-        when(mockItemRepository.search("abc", pageRequest))
+        when(mockItemRepository.search("abc", page))
                 .thenReturn(List.of(item0ForGetAll, item1));
 
         List<ItemDto> itemDtoList = itemService.search("abc", 0, 2);
@@ -331,9 +332,9 @@ public class ItemServiceTests {
             mocked.when(LocalDateTime::now).thenReturn(mockLocalDateTime);
             var result = LocalDateTime.now();
             assertThat(result.getSecond()).isEqualTo(0);
-            PageRequest pageRequest = PageRequest.of(Helpers.getPageNumber(0, 2), 2);
+            Pageable page = PageRequest.of(Helpers.getPageNumber(0, 2), 2);
 
-            when(mockItemRepository.findItemByOwnerId(1L, pageRequest))
+            when(mockItemRepository.findItemByOwnerId(1L, page))
                     .thenReturn(List.of(item0ForGetAll, item1));
 
             when(mockBookingRepository.findNearestBookingByEndDate(1L, LocalDateTime.now()))

@@ -2,6 +2,7 @@ package ru.practicum.shareit.request.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.NotFoundException;
@@ -46,8 +47,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestToFrontDto> findItemRequestsFromIndex(Long ownerId, Integer from, Integer size) {
         userService.findUserById(ownerId);
-        PageRequest pageRequest = PageRequest.of(Helpers.getPageNumber(from, size), size);
-        return ItemRequestMapper.toItemRequestToFrontDto(repository.findItemRequestPages(ownerId, pageRequest));
+        Pageable page = PageRequest.of(Helpers.getPageNumber(from, size), size);
+        return ItemRequestMapper.toItemRequestToFrontDto(repository.findItemRequestPages(ownerId, page));
     }
 
     @Override
