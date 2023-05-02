@@ -7,7 +7,6 @@ import ru.practicum.shareit.booking.dto.BookingToFrontDto;
 
 import javax.persistence.*;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -39,21 +38,10 @@ public class Item {
     }
 
     public String getName() {
-        if (name != null) return name.trim();
-        return name;
+        return name != null ? name.trim() : name;
     }
 
     public String getDescription() {
-        if (description != null) return description.trim();
-        return description;
-    }
-
-    public Set<Comment> getComments() {
-        if (comments == null) return null;
-        return comments.stream().map(comment -> {
-            String text = comment.getText().trim();
-            comment.setText(text);
-            return comment;
-        }).collect(Collectors.toSet());
+        return description != null ? description.trim() : description;
     }
 }

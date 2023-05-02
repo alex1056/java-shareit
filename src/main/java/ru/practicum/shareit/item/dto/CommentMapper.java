@@ -20,6 +20,7 @@ public class CommentMapper {
 
     public static Set<CommentDto> toCommentDto(Iterable<Comment> comments) {
         Set<CommentDto> result = new HashSet<>();
+        if (comments == null) return result;
         for (Comment comment : comments) {
             result.add(toCommentDto(comment));
         }

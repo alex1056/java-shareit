@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.booking.model.Booking;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-    List<Booking> findBookingByBookerIdOrderByStartDesc(Long bookerId);
+    List<Booking> findAllByBookerIdOrderByStartDesc(Long bookerId, Pageable pageable);
 
     Optional<Booking> findBookingByIdAndBookerId(Long id, Long bookerId);
 
@@ -35,10 +36,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "select i.id from items as i " +
             "where b.item_id = i.id AND ?1 = i.owner_id " +
             ") " +
-            "order by b.creation_date desc",
+            "order by b.creation_date desc ",
             nativeQuery = true
     )
-    List<Booking> findBookingsByOwner(Long userId);
+    List<Booking> findBookingsByOwner(Long userId, Pageable pageable);
 
     @Query(value = "select * from bookings b " +
             "where b.id = ?1 " +
@@ -115,7 +116,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "order by b.start_date desc ",
             nativeQuery = true
     )
-    List<Booking> findByBooker_IdAndEndIsBefore(Long bookerId, LocalDateTime dateNow);
+    List<Booking> findByBooker_IdAndEndIsBefore(Long bookerId, LocalDateTime dateNow, Pageable pageable);
 
     @Query(value = "select * from bookings b " +
             "where b.booker_id = ?1 " +
@@ -126,7 +127,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "order by b.start_date desc ",
             nativeQuery = true
     )
-    List<Booking> findByBooker_IdAndEndIsAfterAndStarIsBefore(Long bookerId, LocalDateTime dateNow);
+    List<Booking> findByBooker_IdAndEndIsAfterAndStarIsBefore(Long bookerId, LocalDateTime dateNow, Pageable pageable);
 
     @Query(value = "select * from bookings b " +
             "where b.booker_id = ?1 " +
@@ -135,7 +136,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "order by b.start_date desc ",
             nativeQuery = true
     )
-    List<Booking> findByBooker_IdAndStarIsAfter(Long bookerId, LocalDateTime dateNow);
+    List<Booking> findByBooker_IdAndStarIsAfter(Long bookerId, LocalDateTime dateNow, Pageable pageable);
 
     @Query(value = "select * from bookings b " +
             "where b.booker_id = ?1 " +
@@ -144,5 +145,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "order by b.start_date desc ",
             nativeQuery = true
     )
-    List<Booking> findByBooker_IdAndStatus(Long bookerId, String status);
+    List<Booking> findByBooker_IdAndStatus(Long bookerId, String status, Pageable pageable);
 }

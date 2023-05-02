@@ -20,13 +20,11 @@ public class User {
     private String name;
 
     public String getName() {
-        if (name != null) return name.trim();
-        return name;
+        return name != null ? name.trim() : name;
     }
 
     public String getEmail() {
         if (email != null) return email.trim();
         return email;
     }
-
 }

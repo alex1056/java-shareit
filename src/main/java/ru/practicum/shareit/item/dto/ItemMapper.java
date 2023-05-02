@@ -11,7 +11,7 @@ public class ItemMapper {
                 item.getName().trim(),
                 item.getDescription().trim(),
                 item.isAvailable(),
-                null,
+                item.getRequestId(),
                 item.getLastBooking(),
                 item.getNextBooking()
         );
@@ -26,8 +26,8 @@ public class ItemMapper {
         return result;
     }
 
-    public static ItemCommentsDto toItemDtoComments(Item item) {
-        ItemCommentsDto itemCommentsDto = new ItemCommentsDto(item.getId(),
+    public static ItemCommentDto toItemDtoComments(Item item) {
+        ItemCommentDto itemCommentDto = new ItemCommentDto(item.getId(),
                 item.getName().trim(),
                 item.getDescription().trim(),
                 item.isAvailable(),
@@ -36,11 +36,11 @@ public class ItemMapper {
                 item.getNextBooking(),
                 CommentMapper.toCommentDto(item.getComments())
         );
-        return itemCommentsDto;
+        return itemCommentDto;
     }
 
-    public static List<ItemCommentsDto> toItemDtoComments(Iterable<Item> items) {
-        List<ItemCommentsDto> result = new ArrayList<>();
+    public static List<ItemCommentDto> toItemDtoComments(Iterable<Item> items) {
+        List<ItemCommentDto> result = new ArrayList<>();
         for (Item item : items) {
             result.add(toItemDtoComments(item));
         }
@@ -60,5 +60,24 @@ public class ItemMapper {
                 null
         );
         return item;
+    }
+
+    public static ItemRequestDto toItemRequestDto(Item item) {
+        ItemRequestDto itemRequestDto = new ItemRequestDto(item.getId(),
+                item.getName().trim(),
+                item.getDescription().trim(),
+                item.isAvailable(),
+                item.getRequestId()
+        );
+        return itemRequestDto;
+    }
+
+    public static List<ItemRequestDto> toItemRequestDto(Iterable<Item> items) {
+        List<ItemRequestDto> result = new ArrayList<>();
+        if (items == null) return result;
+        for (Item item : items) {
+            result.add(toItemRequestDto(item));
+        }
+        return result;
     }
 }

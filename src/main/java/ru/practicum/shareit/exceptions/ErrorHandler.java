@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.List;
-
 @RestControllerAdvice
 @Slf4j
 public class ErrorHandler {
@@ -39,18 +37,6 @@ public class ErrorHandler {
 
         public String getError() {
             return error;
-        }
-    }
-
-    private static class MultipleErrorsResponse {
-        List<String> errorsList;
-
-        public MultipleErrorsResponse(List<String> errorsList) {
-            this.errorsList = errorsList;
-        }
-
-        public List<String> getErrorsList() {
-            return errorsList;
         }
     }
 }

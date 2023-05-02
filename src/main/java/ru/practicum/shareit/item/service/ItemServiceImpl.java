@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingMapper;
@@ -27,7 +29,7 @@ import java.util.Optional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-class ItemServiceImpl implements ItemService {
+public class ItemServiceImpl implements ItemService {
     private final ItemRepository repository;
     private final BookingRepository bookingRepository;
     private final UserService userService;
@@ -35,10 +37,10 @@ class ItemServiceImpl implements ItemService {
     private final CommentRepository commentRepository;
 
     @Override
-    public List<ItemCommentsDto> getAll(Long userId) {
+    public List<ItemCommentDto> getAll(Long userId, Integer from, Integer size) {
         userService.findUserById(userId);
-        List<Item> itemList = repository.findItemByOwnerId(userId);
-
+        Pageable page = PageRequest.of(Helpers.getPageNumber(from, size), size);
+        List<Item> itemList = repository.findItemByOwnerId(userId, page);
         for (Item item : itemList) {
             Optional<Booking> bookingOptLast = bookingRepository.findNearestBookingByEndDate(item.getId(), LocalDateTime.now());
 
@@ -70,7 +72,7 @@ class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemCommentsDto findByIdAnyUser(Long userId, Long id) {
+    public ItemCommentDto findByIdAnyUser(Long userId, Long id) {
         Optional<Item> itemOpt = repository.findById(id);
         itemOpt.orElseThrow(() -> new NotFoundException("предмет с id=" + id));
         Item item = itemOpt.get();
@@ -102,13 +104,14 @@ class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> search(String text) {
-        List<Item> itemList = repository.search(text);
+    public List<ItemDto> search(String text, Integer from, Integer size) {
+        Pageable page = PageRequest.of(Helpers.getPageNumber(from, size), size);
+        List<Item> itemList = repository.search(text, page);
         return ItemMapper.toItemDto(itemList);
     }
 
     @Override
-    public CommentDto addComment(Long userId, Long itemId, CommentNewDto commentNewDto) {
+    public CommentDto addComment(Long userId, Long itemId, CommentFromFrontDto commentFromFrontDto) {
         UserDto userDto = userService.findUserById(userId);
         findByIdAnyUser(userId, itemId);
         List<Booking> bookingsList = bookingRepository.findBookingByItemIdAndBookerId(itemId, userId);
@@ -128,7 +131,7 @@ class ItemServiceImpl implements ItemService {
 
         Comment comment = new Comment(
                 null,
-                commentNewDto.getText(),
+                commentFromFrontDto.getText(),
                 itemId,
                 UserMapper.toUser(userDto),
                 LocalDateTime.now());

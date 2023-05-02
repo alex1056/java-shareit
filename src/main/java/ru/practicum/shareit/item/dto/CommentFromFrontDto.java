@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentNewDto {
+public class CommentFromFrontDto {
     private Long id;
     @NotNull(message = "Должен быть не пустой комментарий")
     @NotEmpty(message = "Комментарий должен быть заполнен")
