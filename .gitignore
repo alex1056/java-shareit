@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Binary files ###
+*.class
+*.jar
+*.DS_Store
